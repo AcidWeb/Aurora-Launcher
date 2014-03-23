@@ -3,3 +3,5 @@ Files/
 Sign.bat
 Tools/JETCOMP.exe
 Constants.py
+build/
+Output/
