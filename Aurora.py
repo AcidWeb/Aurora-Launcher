@@ -3,15 +3,19 @@ import shutil
 import winreg
 import subprocess
 import win32file
-import Constants
 
 # Enviroment setup
+DATABASE_PASSWORD = ''
+if os.path.isfile(os.path.join(os.getcwd(), 'unins000.exe')):
+    IS_PORTABLE = False
+else:
+    IS_PORTABLE = True
 k = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\International', 0, winreg.KEY_ALL_ACCESS)
 kDecimalOrg = winreg.QueryValueEx(k, 'sDecimal')[0]
 kThousandOrg = winreg.QueryValueEx(k, 'sThousand')[0]
 winreg.SetValueEx(k, 'sDecimal', 0, 1, '.')
 winreg.SetValueEx(k, 'sThousand', 0, 1, ' ')
-if Constants.IS_PORTABLE:
+if IS_PORTABLE:
     p = subprocess.Popen('regsvr32 /s ' + os.path.join(os.getcwd(), 'MSSTDFMT.DLL'))
     p.wait()
 if os.path.isfile(os.path.join(os.getcwd(), 'Stevefire.mdb.4')):
@@ -24,7 +28,7 @@ shutil.copyfile(os.path.join(os.getcwd(), 'Stevefire.mdb'), os.path.join(os.getc
 os.remove(os.path.join(os.getcwd(), 'Stevefire.mdb'))
 p = subprocess.Popen(os.path.join(os.getcwd(), 'Tools', 'JETCOMP.exe')
                      + ' -src:"' + os.path.join(os.getcwd(), 'Stevefire.mdb.2')
-                     + '" -dest:"' + os.path.join(os.getcwd(), 'Stevefire.mdb') + '" -w' + Constants.DATABASE_PASSWORD)
+                     + '" -dest:"' + os.path.join(os.getcwd(), 'Stevefire.mdb') + '" -w' + DATABASE_PASSWORD)
 p.wait()
 try:
     win32file.CreateSymbolicLink(os.path.splitdrive(os.getcwd())[0] + os.path.sep + 'Logs',
@@ -37,7 +41,7 @@ p = subprocess.Popen(os.path.join(os.getcwd(), 'Aurora.exe'))
 p.wait()
 
 # Cleanup
-if Constants.IS_PORTABLE:
+if IS_PORTABLE:
     p = subprocess.Popen('regsvr32 /s /u ' + os.path.join(os.getcwd(), 'MSSTDFMT.DLL'))
     p.wait()
 try:
