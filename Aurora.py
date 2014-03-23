@@ -33,7 +33,7 @@ except:
     pass
 
 # Starting Aurora
-p = subprocess.Popen(os.path.join(os.getcwd(), 'Aurora_Main.exe'))
+p = subprocess.Popen(os.path.join(os.getcwd(), 'Aurora.exe'))
 p.wait()
 
 # Cleanup

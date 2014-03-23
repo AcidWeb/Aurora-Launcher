@@ -1,7 +1,7 @@
 #define MyAppName "Aurora"
 #define MyAppVersion "6.3.0"
 #define MyAppPublisher "Steve Walmsley"
-#define MyAppExeName "Aurora.exe"
+#define MyAppExeName "Aurora_Wrapper.exe"
 
 [Setup]
 AppId={{90893FB5-38AE-4164-B689-3214719D0D4A}

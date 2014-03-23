@@ -2,7 +2,7 @@ from cx_Freeze import setup, Executable
 
 extra_options = dict(
     options={"build_exe": {"optimize": 2,
-                           "include_files": [['Tools/Aurora.exe.manifest', 'Aurora.exe.manifest']],
+                           "include_files": [['Tools/Aurora_Wrapper.exe.manifest', 'Aurora_Wrapper.exe.manifest']],
                            "copy_dependent_files": True,
                            "create_shared_zip": False,
                            "append_script_to_exe": True,
@@ -10,7 +10,7 @@ extra_options = dict(
                            "excludes": ['tkinter']}},
     executables=[Executable("Aurora.py",
                             base="Win32GUI",
-                            targetName="Aurora.exe",
+                            targetName="Aurora_Wrapper.exe",
                             icon="Assets/Aurora.ico",
                             compress=False)])
 
