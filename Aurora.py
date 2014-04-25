@@ -18,7 +18,7 @@ regThousandOrg = winreg.QueryValueEx(REG, 'sThousand')[0]
 winreg.SetValueEx(REG, 'sDecimal', 0, 1, '.')
 winreg.SetValueEx(REG, 'sThousand', 0, 1, ' ')
 if IS_PORTABLE:
-    p = subprocess.Popen('regsvr32 /s ' + os.path.join(CWD, 'MSSTDFMT.DLL'))
+    p = subprocess.Popen('regsvr32 /s "' + os.path.join(CWD, 'MSSTDFMT.DLL') + '"')
     p.wait()
 if os.path.isfile(os.path.join(CWD, 'Stevefire.mdb.4')):
     shutil.copyfile(os.path.join(CWD, 'Stevefire.mdb.4'), os.path.join(CWD, 'Stevefire.mdb.5'))
@@ -42,7 +42,7 @@ p.wait()
 
 # Cleanup
 if IS_PORTABLE:
-    p = subprocess.Popen('regsvr32 /s /u ' + os.path.join(CWD, 'MSSTDFMT.DLL'))
+    p = subprocess.Popen('regsvr32 /s /u "' + os.path.join(CWD, 'MSSTDFMT.DLL') + '"')
     p.wait()
 try:
     os.remove(os.path.splitdrive(CWD)[0] + os.path.sep + 'Logs')
