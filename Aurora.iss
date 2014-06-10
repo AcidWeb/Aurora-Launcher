@@ -1,5 +1,5 @@
 #define MyAppName "Aurora"
-#define MyAppVersion "6.4.1"
+#define MyAppVersion "6.4.3"
 #define MyAppPublisher "Steve Walmsley"
 #define MyAppExeName "Aurora_Wrapper.exe"
 
