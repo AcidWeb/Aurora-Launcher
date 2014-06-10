@@ -16,7 +16,7 @@ extra_options = dict(
 
 setup(
     name="Aurora Wrapper",
-    version="1.2",
+    version="1.2.1",
     author="Pawel Jastrzebski",
     author_email="pawelj@vulturis.eu",
     license="GPL-3",

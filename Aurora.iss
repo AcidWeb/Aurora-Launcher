@@ -1,5 +1,5 @@
 #define MyAppName "Aurora"
-#define MyAppVersion "6.4.1"
+#define MyAppVersion "6.4.3"
 #define MyAppPublisher "Steve Walmsley"
 #define MyAppExeName "Aurora_Wrapper.exe"
 
@@ -30,7 +30,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "Tools\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
-Source: "build\exe.win32-3.3\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\exe.win32-3.4\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Files\Base\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "Files\Executable\{#MyAppVersion}\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Files\Base\MSSTDFMT.DLL"; DestDir: {sys}; Flags: onlyifdoesntexist regserver 32bit
