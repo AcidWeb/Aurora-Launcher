@@ -30,7 +30,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "Tools\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
-Source: "build\exe.win32-3.4\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Files\Base\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "Files\Executable\{#MyAppVersion}\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Files\Base\MSSTDFMT.DLL"; DestDir: {sys}; Flags: onlyifdoesntexist regserver 32bit
