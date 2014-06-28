@@ -25,7 +25,7 @@ setup(
     name="Aurora Wrapper",
     version=VERSION,
     author="Pawel Jastrzebski",
-    author_email="pawelj@vulturis.eu",
+    author_email="pawelj@iosphe.re",
     license="GPL-3",
     **extra_options
 )
