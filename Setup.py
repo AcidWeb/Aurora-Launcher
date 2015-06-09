@@ -1,4 +1,4 @@
-VERSION = "1.2.1"
+VERSION = "1.3"
 
 import py2exe
 from distutils.core import setup
@@ -11,7 +11,7 @@ extra_options = dict(
     windows=[{"script": "Aurora.py",
               "dest_base": "Aurora_Wrapper",
               "version": VERSION,
-              "copyright": "Pawel Jastrzebski © 2014",
+              "copyright": "Pawel Jastrzebski © 2015",
               "legal_copyright": "GNU General Public License (GPL-3)",
               "product_version": VERSION,
               "product_name": "AuroraWrapper",
