@@ -1,5 +1,5 @@
 #define MyAppName "Aurora"
-#define MyAppVersion "6.4.3"
+#define MyAppVersion "7.1.0"
 #define MyAppPublisher "Steve Walmsley"
 #define MyAppExeName "Aurora_Wrapper.exe"
 
@@ -8,7 +8,7 @@ AppId={{90893FB5-38AE-4164-B689-3214719D0D4A}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-AppCopyright=Copyright (C) 2014 Steve Walmsley
+AppCopyright=Copyright (C) 2014-2016 Steve Walmsley
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
@@ -29,7 +29,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "Tools\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
+Source: "Tools\vc_redist.x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
 Source: "dist\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Files\Base\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "Files\Executable\{#MyAppVersion}\*"; DestDir: "{app}"; Flags: ignoreversion
@@ -40,4 +40,4 @@ Name: "{group}\{#MyAppName} {#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/passive /Q:a /c:""msiexec /qb /i vcredist.msi"" "; StatusMsg: "Installing Microsoft Visual C++ 2010 Redistributable Package...";
+Filename: "{tmp}\vc_redist.x86.exe"; Parameters: "/passive /norestart"; StatusMsg: "Installing Microsoft Visual C++ 2015 Redistributable Package...";

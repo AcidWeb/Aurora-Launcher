@@ -1,5 +1,8 @@
-Files/
 .idea/
-Tools/JETCOMP.exe
+Files/
+Sign.bat
 build/
+dist/
+Tools/JETCOMP.exe
+Aurora_Wrapper.spec
 Output/

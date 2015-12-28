@@ -4,6 +4,7 @@ import winreg
 import subprocess
 import win32file
 
+VERSION = '1.4'
 REG = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\International', 0, winreg.KEY_ALL_ACCESS)
 DATABASE_PASSWORD = ''
 CWD = os.getcwd()
@@ -28,8 +29,8 @@ if os.path.isfile(os.path.join(CWD, 'Stevefire.mdb.2')):
     shutil.copyfile(os.path.join(CWD, 'Stevefire.mdb.2'), os.path.join(CWD, 'Stevefire.mdb.3'))
 shutil.copyfile(os.path.join(CWD, 'Stevefire.mdb'), os.path.join(CWD, 'Stevefire.mdb.2'))
 os.remove(os.path.join(CWD, 'Stevefire.mdb'))
-p = subprocess.Popen(os.path.join(CWD, 'Tools', 'JETCOMP.exe') + ' -src:"' + os.path.join(CWD, 'Stevefire.mdb.2')
-                     + '" -dest:"' + os.path.join(CWD, 'Stevefire.mdb') + '" -w' + DATABASE_PASSWORD)
+p = subprocess.Popen(os.path.join(CWD, 'Tools', 'JETCOMP.exe') + ' -src:"' + os.path.join(CWD, 'Stevefire.mdb.2') +
+                     '" -dest:"' + os.path.join(CWD, 'Stevefire.mdb') + '" -w' + DATABASE_PASSWORD)
 p.wait()
 try:
     win32file.CreateSymbolicLink(os.path.splitdrive(CWD)[0] + os.path.sep + 'Logs', os.path.join(CWD, 'Logs'), 1)

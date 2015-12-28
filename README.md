@@ -8,4 +8,4 @@ Ready packages are available [here](http://aurora2.pentarch.org/index.php/topic,
 
 Aurora Wrapper is free software/open source, and is distributed under the GNU General Public License v3.
 
-Copyright (c) 2014 Paweł Jastrzębski <pawelj@iosphe.re>
+Copyright (c) 2014-2016 Paweł Jastrzębski <pawelj@iosphe.re>
