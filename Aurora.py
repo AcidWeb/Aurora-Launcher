@@ -8,6 +8,24 @@ import pygame
 import random
 import time
 
+
+def show_image(img=None):
+    pygame.display.quit()
+    if not img:
+        image = pygame.image.load(open('Splash.png', 'rb'))
+        screen = pygame.display.set_mode(image.get_size(), pygame.NOFRAME)
+        screen.blit(image, (0, 0))
+    else:
+        image = pygame.image.load(open(os.path.join('Background', img), 'rb'))
+        x = (dinfo.current_w - image.get_size()[0]) // 2
+        y = (dinfo.current_h - image.get_size()[1]) // 2
+        screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
+        screen.blit(image, (x, y))
+    pygame.display.set_icon(pygame.image.load(open('Aurora.png', 'rb')))
+    pygame.display.set_caption('Aurora')
+    pygame.display.update()
+
+
 # Initialization
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(os.path.abspath(sys.executable)))
@@ -18,20 +36,16 @@ if os.path.isfile('unins000.exe'):
 else:
     portable = True
 registry = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\International', 0, winreg.KEY_ALL_ACCESS)
-clock = pygame.time.Clock()
 playlist = []
 dbpassword = ''
 paused = False
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
-pygame.display.set_icon(pygame.image.load(open('Aurora.png', 'rb')))
-pygame.display.set_caption('Aurora')
+clock = pygame.time.Clock()
+dinfo = pygame.display.Info()
 
 # Display splash
-splash = pygame.image.load(open('Splash.png', 'rb'))
-screen = pygame.display.set_mode(splash.get_size(), pygame.NOFRAME)
-screen.blit(splash, (0, 0))
-pygame.display.update()
+show_image()
 
 # Load music
 for ogg in os.listdir('Music'):
@@ -52,7 +66,8 @@ if os.path.isfile('Stevefire.mdb.4'):
 if os.path.isfile('Stevefire.mdb.3'):
     shutil.copyfile('Stevefire.mdb.3', 'Stevefire.mdb.4')
 shutil.copyfile('Stevefire.mdb.2', 'Stevefire.mdb.3')
-subprocess.Popen(os.path.join('Tools', 'JETCOMP.exe') + ' -src:"Stevefire.mdb.2" -dest:"Stevefire.mdb" -w' + dbpassword).wait()
+subprocess.Popen(os.path.join('Tools', 'JETCOMP.exe') + ' -src:"Stevefire.mdb.2" -dest:"Stevefire.mdb" -w' +
+                 dbpassword).wait()
 
 # Enviroment setup
 regdecimalorg = winreg.QueryValueEx(registry, 'sDecimal')[0]
@@ -62,12 +77,14 @@ winreg.SetValueEx(registry, 'sThousand', 0, 1, ' ')
 if portable:
     subprocess.Popen('regsvr32 /s MSSTDFMT.DLL').wait()
 try:
-    win32file.CreateSymbolicLink(os.path.splitdrive(os.getcwd())[0] + os.path.sep + 'Logs', os.path.join(os.getcwd(), 'Logs'), 1)
+    win32file.CreateSymbolicLink(os.path.splitdrive(os.getcwd())[0] + os.path.sep + 'Logs',
+                                 os.path.join(os.getcwd(), 'Logs'), 1)
 except:
     pass
 
 # Starting Aurora
 time.sleep(1)
+show_image(random.choice(os.listdir('Background')))
 aurora = subprocess.Popen('Aurora.exe')
 
 # Main event loop
