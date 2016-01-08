@@ -26,6 +26,17 @@ def show_image(img=None):
     pygame.display.update()
 
 
+def change_volume(up):
+    volume = pygame.mixer.music.get_volume()
+    if up:
+        if volume < 1.0:
+            volume += 0.1
+    else:
+        if volume > 0.1:
+            volume -= 0.1
+    pygame.mixer.music.set_volume(volume)
+
+
 # Initialization
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(os.path.abspath(sys.executable)))
@@ -54,6 +65,7 @@ for ogg in os.listdir('Music'):
 if len(playlist) > 0:
     pygame.mixer.music.load(random.choice(playlist))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    pygame.mixer.music.set_volume(0.3)
     pygame.mixer.music.play()
 
 # Database backup
@@ -89,10 +101,11 @@ aurora = subprocess.Popen('Aurora.exe')
 
 # Main event loop
 while aurora.poll() is None:
-    clock.tick(1)
+    clock.tick(5)
     for event in pygame.event.get():
         if event.type == pygame.USEREVENT:
             pygame.mixer.music.load(random.choice(playlist))
+            pygame.mixer.music.set_volume(pygame.mixer.music.get_volume())
             pygame.mixer.music.play()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_m:
             if paused:
@@ -101,6 +114,10 @@ while aurora.poll() is None:
             else:
                 paused = True
                 pygame.mixer.music.pause()
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_PERIOD:
+            change_volume(True)
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_COMMA:
+            change_volume(False)
         elif event.type == pygame.QUIT:
             aurora.terminate()
 
