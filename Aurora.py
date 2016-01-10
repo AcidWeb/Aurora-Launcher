@@ -7,6 +7,8 @@ import win32file
 import pygame
 import random
 import time
+import configparser
+import argparse
 
 
 def show_image(img=None):
@@ -17,8 +19,8 @@ def show_image(img=None):
         screen.blit(image, (0, 0))
     else:
         image = pygame.image.load(open(os.path.join('Background', img), 'rb'))
-        x = (dinfo.current_w - image.get_size()[0]) // 2
-        y = (dinfo.current_h - image.get_size()[1]) // 2
+        x = (wcfg.dinfo.current_w - image.get_size()[0]) // 2
+        y = (wcfg.dinfo.current_h - image.get_size()[1]) // 2
         screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
         screen.blit(image, (x, y))
     pygame.display.set_icon(pygame.image.load(open('Aurora.png', 'rb')))
@@ -27,14 +29,15 @@ def show_image(img=None):
 
 
 def change_volume(up):
-    volume = pygame.mixer.music.get_volume()
+    volume = round(pygame.mixer.music.get_volume(), 2)
     if up:
         if volume < 1.0:
-            volume += 0.1
+            volume += 0.05
     else:
         if volume > 0.1:
-            volume -= 0.1
-    pygame.mixer.music.set_volume(volume)
+            volume -= 0.05
+    pygame.mixer.music.set_volume(round(volume, 2))
+    icfg['DEFAULT']['MusicVolume'] = str(round(volume, 2))
 
 
 # Initialization
@@ -42,18 +45,20 @@ if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(os.path.abspath(sys.executable)))
 else:
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-if os.path.isfile('unins000.exe'):
-    portable = False
-else:
-    portable = True
-registry = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\International', 0, winreg.KEY_ALL_ACCESS)
-playlist = []
-dbpassword = ''
-paused = False
 os.environ['SDL_VIDEO_CENTERED'] = '1'
+icfg = configparser.ConfigParser()
+icfg.read('Aurora.ini')
+wcfg = argparse.Namespace()
+if os.path.isfile('unins000.exe'):
+    wcfg.portable = False
+else:
+    wcfg.portable = True
+wcfg.registry = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\International', 0, winreg.KEY_ALL_ACCESS)
+wcfg.playlist = []
+wcfg.dbpassword = ''
 pygame.init()
-clock = pygame.time.Clock()
-dinfo = pygame.display.Info()
+wcfg.clock = pygame.time.Clock()
+wcfg.dinfo = pygame.display.Info()
 
 # Display splash
 show_image()
@@ -61,12 +66,18 @@ show_image()
 # Load music
 for ogg in os.listdir('Music'):
     if ogg.endswith('.ogg'):
-        playlist.append(os.path.join('Music', ogg))
-if len(playlist) > 0:
-    pygame.mixer.music.load(random.choice(playlist))
+        wcfg.playlist.append(os.path.join('Music', ogg))
+random.shuffle(wcfg.playlist)
+if len(wcfg.playlist) > 0:
+    pygame.mixer.music.load(wcfg.playlist[0])
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.set_volume(float(icfg['DEFAULT']['MusicVolume']))
     pygame.mixer.music.play()
+if int(icfg['DEFAULT']['MusicDisabled']):
+    wcfg.mpaused = 1
+    pygame.mixer.music.pause()
+else:
+    wcfg.mpaused = 0
 
 # Database backup
 try:
@@ -79,14 +90,14 @@ if os.path.isfile('Stevefire.mdb.3'):
     shutil.copyfile('Stevefire.mdb.3', 'Stevefire.mdb.4')
 shutil.copyfile('Stevefire.mdb.2', 'Stevefire.mdb.3')
 subprocess.Popen(os.path.join('Tools', 'JETCOMP.exe') + ' -src:"Stevefire.mdb.2" -dest:"Stevefire.mdb" -w' +
-                 dbpassword).wait()
+                 wcfg.dbpassword).wait()
 
 # Enviroment setup
-regdecimalorg = winreg.QueryValueEx(registry, 'sDecimal')[0]
-regthousandorg = winreg.QueryValueEx(registry, 'sThousand')[0]
-winreg.SetValueEx(registry, 'sDecimal', 0, 1, '.')
-winreg.SetValueEx(registry, 'sThousand', 0, 1, ' ')
-if portable:
+wcfg.regdecimalorg = winreg.QueryValueEx(wcfg.registry, 'sDecimal')[0]
+wcfg.regthousandorg = winreg.QueryValueEx(wcfg.registry, 'sThousand')[0]
+winreg.SetValueEx(wcfg.registry, 'sDecimal', 0, 1, '.')
+winreg.SetValueEx(wcfg.registry, 'sThousand', 0, 1, ' ')
+if wcfg.portable:
     subprocess.Popen('regsvr32 /s MSSTDFMT.DLL').wait()
 try:
     win32file.CreateSymbolicLink(os.path.splitdrive(os.getcwd())[0] + os.path.sep + 'Logs',
@@ -97,37 +108,41 @@ except:
 # Starting Aurora
 time.sleep(1)
 show_image(random.choice(os.listdir('Background')))
-aurora = subprocess.Popen('Aurora.exe')
+wcfg.aurora = subprocess.Popen('Aurora.exe')
 
 # Main event loop
-while aurora.poll() is None:
-    clock.tick(5)
+while wcfg.aurora.poll() is None:
+    wcfg.clock.tick(5)
     for event in pygame.event.get():
         if event.type == pygame.USEREVENT:
-            pygame.mixer.music.load(random.choice(playlist))
+            wcfg.playlist.append(wcfg.playlist.pop(0))
+            pygame.mixer.music.load(wcfg.playlist[0])
             pygame.mixer.music.set_volume(pygame.mixer.music.get_volume())
             pygame.mixer.music.play()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_m:
-            if paused:
-                paused = False
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_m and len(wcfg.playlist) > 0:
+            if wcfg.mpaused:
+                wcfg.mpaused = 0
                 pygame.mixer.music.unpause()
             else:
-                paused = True
+                wcfg.mpaused = 1
                 pygame.mixer.music.pause()
+            icfg['DEFAULT']['MusicDisabled'] = str(wcfg.mpaused)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_PERIOD:
             change_volume(True)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_COMMA:
             change_volume(False)
         elif event.type == pygame.QUIT:
-            aurora.terminate()
+            wcfg.aurora.terminate()
 
 # Cleanup
-if portable:
+if wcfg.portable:
     subprocess.Popen('regsvr32 /s /u MSSTDFMT.DLL').wait()
 try:
     os.remove(os.path.splitdrive(os.getcwd())[0] + os.path.sep + 'Logs')
 except:
     pass
-winreg.SetValueEx(registry, 'sDecimal', 0, 1, regdecimalorg)
-winreg.SetValueEx(registry, 'sThousand', 0, 1, regthousandorg)
-registry.Close()
+winreg.SetValueEx(wcfg.registry, 'sDecimal', 0, 1, wcfg.regdecimalorg)
+winreg.SetValueEx(wcfg.registry, 'sThousand', 0, 1, wcfg.regthousandorg)
+wcfg.registry.Close()
+with open('Aurora.ini', 'w') as configfile:
+    icfg.write(configfile)
