@@ -30,7 +30,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "Tools\vc_redist.x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
-Source: "dist\Aurora_Wrapper\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "Files\Base\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "Files\Executable\{#MyAppVersion}\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Files\Base\MSSTDFMT.DLL"; DestDir: {sys}; Flags: onlyifdoesntexist regserver 32bit
