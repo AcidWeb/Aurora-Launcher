@@ -4,11 +4,16 @@ import shutil
 import winreg
 import subprocess
 import win32file
+import win32gui
 import pygame
 import random
 import time
 import configparser
 import argparse
+
+
+def window_handler(hwnd, windows):
+    windows.append((hwnd, win32gui.GetWindowText(hwnd)))
 
 
 def show_image(img=None):
@@ -24,7 +29,7 @@ def show_image(img=None):
         screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
         screen.blit(image, (x, y))
     pygame.display.set_icon(pygame.image.load(open('Aurora.png', 'rb')))
-    pygame.display.set_caption('Aurora')
+    pygame.display.set_caption('Aurora Wrapper')
     pygame.display.update()
 
 
@@ -55,6 +60,7 @@ else:
     wcfg.portable = True
 wcfg.registry = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\International', 0, winreg.KEY_ALL_ACCESS)
 wcfg.playlist = []
+wcfg.aurora_window = []
 wcfg.dbpassword = ''
 pygame.init()
 wcfg.clock = pygame.time.Clock()
@@ -109,6 +115,12 @@ except:
 time.sleep(1)
 show_image(random.choice(os.listdir('Background')))
 wcfg.aurora = subprocess.Popen('Aurora.exe')
+time.sleep(1)
+win32gui.EnumWindows(window_handler, wcfg.aurora_window)
+for i in wcfg.aurora_window:
+    if i[1] == "Aurora":
+        wcfg.aurora_window = i[0]
+        break
 
 # Main event loop
 while wcfg.aurora.poll() is None:
@@ -131,6 +143,9 @@ while wcfg.aurora.poll() is None:
             change_volume(True)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_COMMA:
             change_volume(False)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            win32gui.ShowWindow(wcfg.aurora_window, 5)
+            win32gui.SetForegroundWindow(wcfg.aurora_window)
         elif event.type == pygame.QUIT:
             wcfg.aurora.terminate()
 
