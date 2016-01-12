@@ -1,13 +1,14 @@
 import os
 import sys
 import shutil
-import winreg
 import subprocess
+import winreg
 import win32file
 import win32gui
 import pygame
-import random
+import logging
 import time
+import random
 import configparser
 import argparse
 
@@ -49,6 +50,8 @@ def change_volume(up):
 
 
 # Initialization
+logging.basicConfig(filename='Aurora.log', filemode='w', level=logging.INFO)
+logging.info('Initialization')
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(os.path.abspath(sys.executable)))
 else:
@@ -71,9 +74,11 @@ wcfg.clock = pygame.time.Clock()
 wcfg.dinfo = pygame.display.Info()
 
 # Display splash
+logging.info('Displaying splash')
 show_image()
 
 # Load music
+logging.info('Loading music')
 for ogg in os.listdir('Music'):
     if ogg.endswith('.ogg'):
         wcfg.playlist.append(os.path.join('Music', ogg))
@@ -90,9 +95,11 @@ else:
     wcfg.mpaused = 0
 
 # Database backup
+logging.info('Compacting database')
 try:
     shutil.move('Stevefire.mdb', 'Stevefire.mdb.2')
 except PermissionError:
+    logging.error('Aurora already running!')
     sys.exit()
 if os.path.isfile('Stevefire.mdb.4'):
     shutil.copyfile('Stevefire.mdb.4', 'Stevefire.mdb.5')
@@ -103,6 +110,7 @@ subprocess.Popen(os.path.join('Tools', 'JETCOMP.exe') + ' -src:"Stevefire.mdb.2"
                  wcfg.dbpassword).wait()
 
 # Enviroment setup
+logging.info('Setting environment')
 wcfg.regdecimalorg = winreg.QueryValueEx(wcfg.registry, 'sDecimal')[0]
 wcfg.regthousandorg = winreg.QueryValueEx(wcfg.registry, 'sThousand')[0]
 winreg.SetValueEx(wcfg.registry, 'sDecimal', 0, 1, '.')
@@ -116,6 +124,7 @@ except:
     pass
 
 # Starting Aurora
+logging.info('Starting Aurora')
 time.sleep(1)
 show_image(random.choice(os.listdir('Background')))
 wcfg.aurora = subprocess.Popen('Aurora.exe')
@@ -127,6 +136,7 @@ for i in wcfg.aurora_window:
         break
 
 # Main event loop
+logging.info('Entering main event loop')
 while wcfg.aurora.poll() is None:
     wcfg.clock.tick(5)
     for event in pygame.event.get():
@@ -154,6 +164,7 @@ while wcfg.aurora.poll() is None:
             wcfg.aurora.terminate()
 
 # Cleanup
+logging.info('Starting cleanup')
 if wcfg.portable:
     subprocess.Popen('regsvr32 /s /u MSSTDFMT.DLL').wait()
 try:
