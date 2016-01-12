@@ -68,7 +68,7 @@ wcfg.registry = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\Interna
 wcfg.playlist = []
 wcfg.aurora_window = []
 wcfg.dbpassword = ''
-wcfg.wrapper_version = '7.10 - 2.2'
+wcfg.wrapper_version = '7.10 - 2.3'
 pygame.init()
 wcfg.clock = pygame.time.Clock()
 wcfg.dinfo = pygame.display.Info()
