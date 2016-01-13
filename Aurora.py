@@ -23,9 +23,9 @@ def show_image(img=None):
         image = pygame.image.load(open('Splash.png', 'rb'))
         screen = pygame.display.set_mode(image.get_size(), pygame.NOFRAME)
         screen.blit(image, (0, 0))
-        font = pygame.font.Font(None, 12)
+        font = pygame.font.Font('Aurora.ttf', 9)
         text = font.render(wcfg.wrapper_version, 1, (255, 255, 255))
-        screen.blit(text, (1, 207))
+        screen.blit(text, (398, 204))
     else:
         image = pygame.image.load(open(os.path.join('Background', img), 'rb'))
         x = (wcfg.dinfo.current_w - image.get_size()[0]) // 2
@@ -68,7 +68,7 @@ wcfg.registry = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Control Panel\\Interna
 wcfg.playlist = []
 wcfg.aurora_window = []
 wcfg.dbpassword = ''
-wcfg.wrapper_version = '7.10 - 2.3'
+wcfg.wrapper_version = '7.10 - 2.4'
 pygame.init()
 wcfg.clock = pygame.time.Clock()
 wcfg.dinfo = pygame.display.Info()
