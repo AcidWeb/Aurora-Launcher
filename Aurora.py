@@ -124,8 +124,9 @@ subprocess.Popen(os.path.join('Tools', 'JETCOMP.exe') + ' -src:"Stevefire.mdb.2"
 
 # Enviroment setup
 logging.info('Setting environment')
-wcfg.regdecimalorg = winreg.QueryValueEx(wcfg.registry, 'sDecimal')[0]
-wcfg.regthousandorg = winreg.QueryValueEx(wcfg.registry, 'sThousand')[0]
+if 'regdecimal' not in icfg['DEFAULT'].keys():
+    icfg['DEFAULT']['regdecimal'] = '"' + winreg.QueryValueEx(wcfg.registry, 'sDecimal')[0] + '"'
+    icfg['DEFAULT']['regthousand'] = '"' + winreg.QueryValueEx(wcfg.registry, 'sThousand')[0] + '"'
 winreg.SetValueEx(wcfg.registry, 'sDecimal', 0, 1, '.')
 winreg.SetValueEx(wcfg.registry, 'sThousand', 0, 1, ' ')
 if wcfg.portable:
@@ -192,8 +193,8 @@ try:
     os.remove(os.path.splitdrive(os.getcwd())[0] + os.path.sep + 'Logs')
 except:
     pass
-winreg.SetValueEx(wcfg.registry, 'sDecimal', 0, 1, wcfg.regdecimalorg)
-winreg.SetValueEx(wcfg.registry, 'sThousand', 0, 1, wcfg.regthousandorg)
+winreg.SetValueEx(wcfg.registry, 'sDecimal', 0, 1, icfg['DEFAULT']['regdecimal'][1:-1])
+winreg.SetValueEx(wcfg.registry, 'sThousand', 0, 1, icfg['DEFAULT']['regthousand'][1:-1])
 wcfg.registry.Close()
 with open('Aurora.ini', 'w') as configfile:
     icfg.write(configfile)
