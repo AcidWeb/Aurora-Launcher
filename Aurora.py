@@ -44,7 +44,7 @@ def show_image(img=None, tips=None):
         if tips:
             font = pygame.font.Font('Aurora.ttf', 12)
             font.set_bold(True)
-            text = font.render('M - enable/disable music   , - volume down   , - volume up', 1, (255, 255, 255))
+            text = font.render('M - enable/disable music   , - volume down   . - volume up', 1, (255, 255, 255))
             wcfg.screen.blit(text, ((wcfg.dinfo.current_w // 2) - (text.get_width() // 2), wcfg.dinfo.current_h - 15))
         pygame.display.update()
 
