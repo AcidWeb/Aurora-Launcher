@@ -17,24 +17,36 @@ def window_handler(hwnd, windows):
     windows.append((hwnd, win32gui.GetWindowText(hwnd)))
 
 
-def show_image(img=None):
-    pygame.display.quit()
-    if not img:
-        image = pygame.image.load(open('Splash.png', 'rb'))
-        screen = pygame.display.set_mode(image.get_size(), pygame.NOFRAME)
-        screen.blit(image, (0, 0))
-        font = pygame.font.Font('Aurora.ttf', 9)
-        text = font.render(wcfg.wrapper_version, 1, (255, 255, 255))
-        screen.blit(text, (398, 204))
+def show_image(img=None, tips=None):
+    if tips is None:
+        pygame.display.quit()
+        if not img:
+            image = pygame.image.load(open('Splash.png', 'rb'))
+            screen = pygame.display.set_mode(image.get_size(), pygame.NOFRAME)
+            screen.blit(image, (0, 0))
+            font = pygame.font.Font('Aurora.ttf', 9)
+            text = font.render(wcfg.wrapper_version, 1, (255, 255, 255))
+            screen.blit(text, (398, 204))
+        else:
+            image = pygame.image.load(open(os.path.join('Background', img), 'rb'))
+            x = (wcfg.dinfo.current_w - image.get_size()[0]) // 2
+            y = (wcfg.dinfo.current_h - image.get_size()[1]) // 2
+            wcfg.screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
+            wcfg.screen.blit(image, (x, y))
+        pygame.display.set_icon(pygame.image.load(open('Aurora.png', 'rb')))
+        pygame.display.set_caption('Aurora Wrapper')
+        pygame.display.update()
     else:
         image = pygame.image.load(open(os.path.join('Background', img), 'rb'))
         x = (wcfg.dinfo.current_w - image.get_size()[0]) // 2
         y = (wcfg.dinfo.current_h - image.get_size()[1]) // 2
-        screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
-        screen.blit(image, (x, y))
-    pygame.display.set_icon(pygame.image.load(open('Aurora.png', 'rb')))
-    pygame.display.set_caption('Aurora Wrapper')
-    pygame.display.update()
+        wcfg.screen.blit(image, (x, y))
+        if tips:
+            font = pygame.font.Font('Aurora.ttf', 12)
+            font.set_bold(True)
+            text = font.render('M - enable/disable music   , - volume down   , - volume up', 1, (255, 255, 255))
+            wcfg.screen.blit(text, ((wcfg.dinfo.current_w // 2) - (text.get_width() // 2), wcfg.dinfo.current_h - 15))
+        pygame.display.update()
 
 
 def change_volume(up):
@@ -69,6 +81,7 @@ wcfg.playlist = []
 wcfg.aurora_window = []
 wcfg.dbpassword = ''
 wcfg.wrapper_version = '7.10 - 2.4'
+wcfg.background = random.choice(os.listdir('Background'))
 pygame.init()
 wcfg.clock = pygame.time.Clock()
 wcfg.dinfo = pygame.display.Info()
@@ -126,7 +139,7 @@ except:
 # Starting Aurora
 logging.info('Starting Aurora')
 time.sleep(1)
-show_image(random.choice(os.listdir('Background')))
+show_image(wcfg.background)
 wcfg.aurora = subprocess.Popen('Aurora.exe')
 time.sleep(1)
 win32gui.EnumWindows(window_handler, wcfg.aurora_window)
@@ -157,7 +170,15 @@ while wcfg.aurora.poll() is None:
             change_volume(True)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_COMMA:
             change_volume(False)
+        elif event.type == pygame.ACTIVEEVENT:
+            if event.gain and event.state == 6:
+                show_image(wcfg.background, True)
+            elif event.state == 2:
+                show_image(wcfg.background, False)
+            pygame.event.clear()
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            show_image(wcfg.background, False)
+            pygame.event.clear()
             win32gui.ShowWindow(wcfg.aurora_window, 5)
             win32gui.SetForegroundWindow(wcfg.aurora_window)
         elif event.type == pygame.QUIT:
